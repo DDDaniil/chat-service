@@ -1,0 +1,139 @@
+﻿version: '3.8'
+    
+services:
+  
+  db:
+    image: postgres:latest
+    container_name: 'db'
+    ports:
+      - "7000:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "3369"
+      POSTGRES_DB: "postgres"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+        
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000      
+  
+  kafka:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: kafka
+    ports:
+      - '9092:9092'
+      - '9094:9094'
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 #команда, отвечающая за количество реплик в топике
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0 
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      
+  mongodb:
+    container_name: "mongodb"
+    image: mongo
+    restart: always
+    ports:
+     - "27017:27017"
+  
+  s3:
+    image: zenko/cloudserver
+    container_name: "s3"
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      - SCALITY_ACCESS_KEY_ID=access
+      - SCALITY_SECRET_ACCESS_KEY=secret
+      - S3DATA=multiple
+      - S3BACKEND=mem
+      - ENDPOINT=s3
+    
+  redis-master:
+    image: bitnami/redis:latest
+    #container_name: 'redis-master'
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - ALLOW_EMPTY_PASSWORD=yes
+  
+  chat-client:
+    build:
+      context: chat.ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+        
+        
+  #chat-api:
+  #  build:
+  #    context: chat.back/Chat
+  #    dockerfile: Chat.API/Dockerfile
+  #  ports:
+  #    - "5038:80"
+  #  depends_on:
+  #    - db
+  #    - rabbitmq
+  #    - redis-master
+
+  chat-saver:
+    build:
+      context: chat.back/Chat
+      dockerfile: Chat.BackgroundService/Dockerfile
+    ports:
+      - "8001:80"
+    restart: always
+    depends_on:
+      - db
+      - rabbitmq
+      - redis-master
+        
+  spotify-ui:
+    build:
+      context: spotify/spotify-clone
+      dockerfile: UI/Dockerfile
+    container_name: "spotify-ui"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "7057:80"
+    restart: always
+    depends_on:
+      - db
+
+  spotify-api:
+    build:
+      context: spotify/db_web_api/src/DB
+      dockerfile: ./Dockerfile
+    container_name: "spotify-api"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ENDPOINT=localhost
+    ports:
+      - "7030:80"
+    restart: always
+    depends_on:
+      - db
+        
+        

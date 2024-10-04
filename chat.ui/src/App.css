@@ -1,0 +1,123 @@
+Form Button {
+	width: 100%;
+}
+
+h2 {
+	color: #020202;
+}
+
+h6 {
+	color: greenyellow;
+}
+
+hr.line {
+	border: 1px solid #313131;
+	margin: auto auto 20px;
+	width: 175px;
+}
+
+.app {
+	margin: auto;
+	padding-top: 40px;
+	width: 950px;
+	text-align: center;
+}
+
+.lobby {
+	width: 400px;
+	margin: auto;
+}
+
+.chat {
+	display: grid;
+}
+
+.leave-room {
+	text-align: right;
+	margin-bottom: 4px;
+}
+
+.user-list {
+	float: left;
+	background-color: rgba(2, 2, 2, 0.82);
+	color:white;
+	width: 200px;
+	height: 400px;
+	margin-right: 4px;
+	position: relative;
+	border-radius: 20px;
+}
+
+.message-container {
+	height: 400px;
+	background-color: rgba(2, 2, 2, 0.73);
+	overflow: auto;
+	border-radius: 5px;
+	margin-bottom: 20px;
+	box-shadow: 5px 1px 5px 1px rgba(49, 49, 49, 0.77);
+}
+
+.user-message {
+	text-align: right;
+	padding-right: 5px;
+	font-size: 18px;
+}
+
+.message {
+	display: inline-flex;
+	padding: 5px 10px;
+	font-size: 20px;
+	color: #020202;
+	border-radius: 20px;
+	margin: 3px auto 0;
+}
+
+.from-user {
+	font-size: small;
+	margin-bottom: 3px;
+	margin-right: 5px;
+	color: white;
+}
+
+.box {
+	background-color: rgb(209, 229, 25);
+}
+.box:hover {
+	background-color: #13ee79;
+	transition: 0.5s;
+}
+
+input[type="file"]::file-selector-button {
+	border: 2px solid #1d69cc;
+	padding: 0.2em 0.4em;
+	border-radius: 0.2em;
+	background-color: rgb(91, 208, 217);
+	transition: 0.5s;
+}
+
+input[type="file"]::-ms-browse:hover {
+	background-color: #81ecec;
+	border: 2px solid #00cec9;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+	background-color: #81ecec;
+	border: 2px solid #00cec9;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+	background-color: #81ecec;
+	border: 2px solid #00cec9;
+}
+
+.runningText {
+	background-color: rgb(32, 167, 62);
+	font-family: "Britannic Bold", serif;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	width: 20%;
+	border-radius: 25px;
+}
+
+
